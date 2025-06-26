@@ -9,7 +9,13 @@ from datetime import datetime
 class Signup(Resource):
     def post(self):
         data = request.get_json()
-        user = User(username=data['username'], password_hash=generate_password_hash(data['password']), is_admin=data.get('is_admin', False))
+        if User.query.filter_by(username=data['username']).first():
+            return {'error': 'Username already exists'}, 400
+        user = User(
+            username=data['username'],
+            password_hash=generate_password_hash(data['password']),
+            is_admin=data.get('is_admin', False)
+        )
         db.session.add(user)
         db.session.commit()
         return {'message': 'User created'}, 201
@@ -27,10 +33,18 @@ class StationList(Resource):
     def get(self):
         stations = [station.to_dict() for station in ChargingStation.query.all()]
         return stations, 200
+
     @jwt_required()
     def post(self):
         data = request.get_json()
-        station = ChargingStation(name=data['name'], location=data['location'], is_available=data.get('is_available', True), price=data['price'], type=data['type'], owner_id=data['owner_id'])
+        station = ChargingStation(
+            name=data['name'],
+            location=data['location'],
+            is_available=data.get('is_available', True),
+            price=data['price'],
+            type=data['type'],
+            owner_id=data['owner_id']
+        )
         db.session.add(station)
         db.session.commit()
         return station.to_dict(), 201
@@ -39,6 +53,7 @@ class StationDetail(Resource):
     def get(self, id):
         station = ChargingStation.query.get_or_404(id)
         return station.to_dict(), 200
+
     @jwt_required()
     def patch(self, id):
         station = ChargingStation.query.get_or_404(id)
@@ -47,6 +62,7 @@ class StationDetail(Resource):
             setattr(station, key, value)
         db.session.commit()
         return station.to_dict(), 200
+
     @jwt_required()
     def delete(self, id):
         station = ChargingStation.query.get_or_404(id)
@@ -58,10 +74,16 @@ class ReservationList(Resource):
     def get(self):
         reservations = [res.to_dict() for res in Reservation.query.all()]
         return reservations, 200
+
     @jwt_required()
     def post(self):
         data = request.get_json()
-        reservation = Reservation(user_id=data['user_id'], station_id=data['station_id'], vehicle_details=data['vehicle_details'], start_time=datetime.strptime(data['start_time'], '%Y-%m-%d %H:%M:%S'))
+        reservation = Reservation(
+            user_id=data['user_id'],
+            station_id=data['station_id'],
+            vehicle_details=data['vehicle_details'],
+            start_time=datetime.strptime(data['start_time'], '%Y-%m-%d %H:%M:%S')
+        )
         db.session.add(reservation)
         db.session.commit()
         return reservation.to_dict(), 201
@@ -70,10 +92,16 @@ class ReviewList(Resource):
     def get(self):
         reviews = [review.to_dict() for review in Review.query.all()]
         return reviews, 200
+
     @jwt_required()
     def post(self):
         data = request.get_json()
-        review = Review(user_id=data['user_id'], station_id=data['station_id'], rating=data['rating'], comment=data.get('comment'))
+        review = Review(
+            user_id=data['user_id'],
+            station_id=data['station_id'],
+            rating=data['rating'],
+            comment=data.get('comment')
+        )
         db.session.add(review)
         db.session.commit()
         return review.to_dict(), 201
