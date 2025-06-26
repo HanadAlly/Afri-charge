@@ -1,11 +1,12 @@
 from server.config import app, db, api
 from server.models import User, ChargingStation, Reservation, Review
 from flask import request
+from flask_restful import Resource
 from flask_jwt_extended import jwt_required, create_access_token
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-class Signup(api.Resource):
+class Signup(Resource):
     def post(self):
         data = request.get_json()
         user = User(username=data['username'], password_hash=generate_password_hash(data['password']), is_admin=data.get('is_admin', False))
@@ -13,7 +14,7 @@ class Signup(api.Resource):
         db.session.commit()
         return {'message': 'User created'}, 201
 
-class Login(api.Resource):
+class Login(Resource):
     def post(self):
         data = request.get_json()
         user = User.query.filter_by(username=data['username']).first()
@@ -22,7 +23,7 @@ class Login(api.Resource):
             return {'token': token}, 200
         return {'error': 'Invalid credentials'}, 401
 
-class StationList(api.Resource):
+class StationList(Resource):
     def get(self):
         stations = [station.to_dict() for station in ChargingStation.query.all()]
         return stations, 200
@@ -34,7 +35,7 @@ class StationList(api.Resource):
         db.session.commit()
         return station.to_dict(), 201
 
-class StationDetail(api.Resource):
+class StationDetail(Resource):
     def get(self, id):
         station = ChargingStation.query.get_or_404(id)
         return station.to_dict(), 200
@@ -53,7 +54,7 @@ class StationDetail(api.Resource):
         db.session.commit()
         return '', 204
 
-class ReservationList(api.Resource):
+class ReservationList(Resource):
     def get(self):
         reservations = [res.to_dict() for res in Reservation.query.all()]
         return reservations, 200
@@ -65,7 +66,7 @@ class ReservationList(api.Resource):
         db.session.commit()
         return reservation.to_dict(), 201
 
-class ReviewList(api.Resource):
+class ReviewList(Resource):
     def get(self):
         reviews = [review.to_dict() for review in Review.query.all()]
         return reviews, 200
