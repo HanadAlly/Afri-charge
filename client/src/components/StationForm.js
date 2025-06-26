@@ -9,10 +9,17 @@ const StationSchema = Yup.object().shape({
     .min(0, "Price must be positive")
     .required("Price is required"),
   type: Yup.string().required("Type is required"),
+  ownerId: Yup.number().required("Owner ID is required"),
 });
 
 function StationForm() {
-  const initialValues = { name: "", location: "", price: "", type: "" };
+  const initialValues = {
+    name: "",
+    location: "",
+    price: "",
+    type: "",
+    ownerId: "",
+  };
 
   const handleSubmit = (values) => {
     fetch("http://localhost:5555/api/stations", {
@@ -26,45 +33,57 @@ function StationForm() {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Add Station</h2>
+    <div className="p-6 max-w-lg mx-auto">
+      <h2 className="text-3xl font-bold text-africharge-blue mb-6">
+        Add a Charging Station
+      </h2>
       <Formik
         initialValues={initialValues}
         validationSchema={StationSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
-          <Form>
-            <div className="mb-4">
-              <label className="block">Name</label>
-              <Field name="name" className="border p-2 w-full" />
+          <Form className="space-y-4">
+            <div>
+              <label className="block text-africharge-gray">Name</label>
+              <Field name="name" className="w-full p-2 border rounded" />
               <ErrorMessage
                 name="name"
                 component="div"
-                className="text-red-500"
+                className="text-red-500 text-sm"
               />
             </div>
-            <div className="mb-4">
-              <label className="block">Location</label>
-              <Field name="location" className="border p-2 w-full" />
+            <div>
+              <label className="block text-africharge-gray">
+                Location (lat,long)
+              </label>
+              <Field name="location" className="w-full p-2 border rounded" />
               <ErrorMessage
                 name="location"
                 component="div"
-                className="text-red-500"
+                className="text-red-500 text-sm"
               />
             </div>
-            <div className="mb-4">
-              <label className="block">Price</label>
-              <Field name="price" type="number" className="border p-2 w-full" />
+            <div>
+              <label className="block text-africharge-gray">Price ($)</label>
+              <Field
+                name="price"
+                type="number"
+                className="w-full p-2 border rounded"
+              />
               <ErrorMessage
                 name="price"
                 component="div"
-                className="text-red-500"
+                className="text-red-500 text-sm"
               />
             </div>
-            <div className="mb-4">
-              <label className="block">Type</label>
-              <Field name="type" as="select" className="border p-2 w-full">
+            <div>
+              <label className="block text-africharge-gray">Type</label>
+              <Field
+                name="type"
+                as="select"
+                className="w-full p-2 border rounded"
+              >
                 <option value="">Select Type</option>
                 <option value="Fast">Fast</option>
                 <option value="Slow">Slow</option>
@@ -72,13 +91,26 @@ function StationForm() {
               <ErrorMessage
                 name="type"
                 component="div"
-                className="text-red-500"
+                className="text-red-500 text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-africharge-gray">Owner ID</label>
+              <Field
+                name="ownerId"
+                type="number"
+                className="w-full p-2 border rounded"
+              />
+              <ErrorMessage
+                name="ownerId"
+                component="div"
+                className="text-red-500 text-sm"
               />
             </div>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-blue-500 text-white p-2 rounded"
+              className="w-full bg-africharge-blue text-white p-2 rounded hover:bg-blue-700"
             >
               Submit
             </button>

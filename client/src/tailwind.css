@@ -1,15 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer components {
-  .station-card {
-    @apply bg-white p-4 rounded-lg shadow-md mb-4;
-  }
-  .btn-primary {
-    @apply bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700;
-  }
-  .btn-secondary {
-    @apply bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300;
-  }
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        'africharge-blue': '#1E40AF',
+        'africharge-gray': '#4B5563',
+      },
+      fontFamily: {
+        'sans': ['"Roboto", sans-serif'],
+      },
+    },
+  },
+  plugins: [],
 }

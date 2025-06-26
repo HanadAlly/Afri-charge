@@ -1,77 +1,71 @@
-import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 function StationList() {
   const [stations, setStations] = useState([]);
-  const [filteredStations, setFilteredStations] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetch('/api/stations')
-      .then((res) => res.json())
-      .then((data) => {
-        setStations(data);
-        setFilteredStations(data);
-      });
+    fetch("http://localhost:5555/api/stations")
+      .then((response) => response.json())
+      .then((data) => setStations(data))
+      .catch((error) => console.error("Error:", error));
   }, []);
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setFilteredStations(
-      stations.filter(station =>
-        station.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        station.location.toLowerCase().includes(e.target.value.toLowerCase())
-      )
-    );
-  };
+  const defaultPosition = [-1.2921, 36.8219]; // Nairobi coordinates
 
   return (
-    <div className="p-4 bg-blue-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-green-800 mb-4">AfriCharge Map</h1>
-      <button className="btn-primary mb-4 float-right" onClick={() => window.location.href = '/stations/new'}>Add Station</button>
-      <input
-        type="text"
-        placeholder="Search locations..."
-        value={searchTerm}
-        onChange={handleSearch}
-        className="w-full p-2 mb-4 border rounded"
-      />
-      <div className="flex">
-        <div className="w-1/4 p-4 bg-white rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-2">Nearby Stations</h2>
-          {filteredStations.map((station) => (
-            <div key={station.id} className="station-card">
-              <h3 className="font-bold">{station.name}</h3>
-              <p className="text-gray-600">{station.location}</p>
-              <p className={station.is_available ? 'text-green-600' : 'text-red-600'}>
-                {station.is_available ? 'available' : 'busy'}
-              </p>
-              <p>Distance: {Math.random() * 10} km</p>
-              <p>Type: {station.type}</p>
-              <p>Price: ${station.price}/kWh</p>
-              <button className="btn-secondary mt-2 w-full">Reserve Spot</button>
-            </div>
+    <div className="p-6">
+      <h2 className="text-3xl font-bold text-africharge-blue mb-6">
+        Find Charging Stations
+      </h2>
+      <div className="w-full h-96 mb-6">
+        <MapContainer
+          center={defaultPosition}
+          zoom={10}
+          style={{ height: "100%", width: "100%" }}
+          className="rounded-lg shadow-md"
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {stations.map((station) => (
+            <Marker
+              key={station.id}
+              position={
+                [
+                  station.location.split(",")[0],
+                  station.location.split(",")[1],
+                ] || defaultPosition
+              }
+            >
+              <Popup className="text-africharge-gray">
+                <strong>{station.name}</strong>
+                <br />
+                Location: {station.location}
+                <br />
+                Price: ${station.price} ({station.type})
+              </Popup>
+            </Marker>
           ))}
-        </div>
-        <div className="w-3/4 p-4">
-          <MapContainer center={[1.286, 36.817]} zoom={4} style={{ height: '400px' }}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {filteredStations.map((station) => {
-              const [lat, lon] = station.location.split(', ').map(Number);
-              return (
-                <Marker key={station.id} position={[lat, lon]}>
-                  <Popup>{station.name} - {station.is_available ? 'Available' : 'Busy'}</Popup>
-                </Marker>
-              );
-            })}
-          </MapContainer>
-          <p className="text-center text-gray-600 mt-2">Interactive Map<br />Map integration will show real-time charging station locations and availability across Africa.</p>
-        </div>
+        </MapContainer>
       </div>
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {stations.map((station) => (
+          <li key={station.id} className="p-4 bg-white shadow rounded-lg">
+            <h3 className="text-xl font-semibold text-africharge-blue">
+              {station.name}
+            </h3>
+            <p className="text-africharge-gray">Location: {station.location}</p>
+            <p className="text-africharge-gray">Price: ${station.price}</p>
+            <p className="text-africharge-gray">Type: {station.type}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
 export default StationList;
-

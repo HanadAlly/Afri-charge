@@ -22,41 +22,41 @@ function Login() {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
+    <div className="p-6 max-w-md mx-auto">
+      <h2 className="text-3xl font-bold text-africharge-blue mb-6">Login</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={LoginSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
-          <Form>
-            <div className="mb-4">
-              <label className="block">Username</label>
-              <Field name="username" className="border p-2 w-full" />
+          <Form className="space-y-4">
+            <div>
+              <label className="block text-africharge-gray">Username</label>
+              <Field name="username" className="w-full p-2 border rounded" />
               <ErrorMessage
                 name="username"
                 component="div"
-                className="text-red-500"
+                className="text-red-500 text-sm"
               />
             </div>
-            <div className="mb-4">
-              <label className="block">Password</label>
+            <div>
+              <label className="block text-africharge-gray">Password</label>
               <Field
                 name="password"
                 type="password"
-                className="border p-2 w-full"
+                className="w-full p-2 border rounded"
               />
               <ErrorMessage
                 name="password"
                 component="div"
-                className="text-red-500"
+                className="text-red-500 text-sm"
               />
             </div>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-blue-500 text-white p-2 rounded"
+              className="w-full bg-africharge-blue text-white p-2 rounded hover:bg-blue-700"
             >
               Login
             </button>
