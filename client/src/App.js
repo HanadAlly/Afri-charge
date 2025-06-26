@@ -6,19 +6,25 @@ import StationForm from "./components/StationForm";
 import About from "./components/About";
 import GetStarted from "./components/GetStarted";
 import Login from "./components/Login";
+import Footer from "./components/Footer";
 
 function App() {
   return (
     <Router>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<GetStarted />} />
-        <Route path="/find-stations" element={<StationList />} />
-        <Route path="/stations/new" element={<StationForm />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/get-started" element={<GetStarted />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<GetStarted />} />
+            <Route path="/find-stations" element={<StationList />} />
+            <Route path="/stations/new" element={<StationForm />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/get-started" element={<GetStarted />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
   );
 }
