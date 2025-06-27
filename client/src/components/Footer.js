@@ -2,8 +2,10 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="bg-africharge-blue text-white p-4 text-center">
-      <p>© 2025 AfriCharge | All Rights Reserved</p>
+    <footer className="bg-slate-800 text-slate-400 p-6">
+      <div className="container mx-auto text-center">
+        <p>© 2025 AfriCharge | Powering the Future | All Rights Reserved</p>
+      </div>
     </footer>
   );
 }

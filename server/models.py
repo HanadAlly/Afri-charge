@@ -44,10 +44,10 @@ class ChargingStation(db.Model):
             'type': self.type,
             'owner_id': self.owner_id
         }
-    
+
     def __repr__(self): return f'<ChargingStation {self.name}>'
 
-class Reservation(db.Model): 
+class Reservation(db.Model):
     __tablename__ = 'reservations'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -67,7 +67,7 @@ class Reservation(db.Model):
 
     def __repr__(self): return f'<Reservation User {self.user_id} at Station {self.station_id}>'
 
-class Review(db.Model): 
+class Review(db.Model):
     __tablename__ = 'reviews'
 
     id = db.Column(db.Integer, primary_key=True)
