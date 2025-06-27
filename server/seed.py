@@ -1,17 +1,15 @@
-# --- REVISED seed.py ---
-
-from server.config import app, db
+from server.app import app, db 
 from server.models import User, ChargingStation, Reservation, Review
 from datetime import datetime
-from werkzeug.security import generate_password_hash  # <--- IMPORT THIS
+from werkzeug.security import generate_password_hash
+
 
 with app.app_context():
     print("Deleting old data...")
-    # Delete in reverse order of dependencies
-    db.session.query(Review).delete()
-    db.session.query(Reservation).delete()
-    db.session.query(ChargingStation).delete()
-    db.session.query(User).delete()
+    Review.query.delete()
+    Reservation.query.delete()
+    ChargingStation.query.delete()
+    User.query.delete()
     db.session.commit()
 
     print("Creating new users...")
