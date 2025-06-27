@@ -16,7 +16,7 @@ api = Api(app)
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 jwt = JWTManager(app)
 
-
+from flask_jwt_extended import get_jwt_identity
 
 class StationList(Resource):
     def get(self):
@@ -24,11 +24,15 @@ class StationList(Resource):
         return stations, 200
     @jwt_required()
     def post(self):
-        
+        current_user_id = get_jwt_identity() # <-- Get the user ID from the token
         data = request.get_json()
         station = ChargingStation(
-            name=data['name'], location=data['location'], is_available=data.get('is_available', True),
-            price=data['price'], type=data['type'], owner_id=data['owner_id']
+            name=data['name'],
+            location=data['location'],
+            is_available=data.get('is_available', True),
+            price=data['price'],
+            type=data['type'],
+            owner_id=current_user_id # <-- Use the ID from the token
         )
         db.session.add(station)
         db.session.commit()
@@ -112,7 +116,31 @@ class Signup(Resource):
         db.session.commit()
         return {'message': 'User created'}, 201
 
+class UserStations(Resource):
+    @jwt_required()
+    def get(self):
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
+        if not user:
+            return {"msg": "User not found"}, 404
+        
+        stations = [station.to_dict() for station in user.stations]
+        return stations, 200
 
+class UserReservations(Resource):
+    @jwt_required()
+    def get(self):
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
+        if not user:
+            return {"msg": "User not found"}, 404
+            
+        reservations = [reservation.to_dict() for reservation in user.reservations]
+        return reservations, 200
+
+
+api.add_resource(UserStations, '/api/user/stations')
+api.add_resource(UserReservations, '/api/user/reservations')
 api.add_resource(Signup, '/api/signup')
 api.add_resource(Login, '/api/login')
 api.add_resource(StationList, '/api/stations')
