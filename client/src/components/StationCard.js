@@ -6,16 +6,49 @@ import { toast } from 'react-toastify';
 
 function StationCard({ station }) {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, token } = useAuth();
 
     const handleReserveClick = () => {
         if (!user) {
             toast.info("Please log in to make a reservation.");
             navigate('/login');
-        } else {
-            toast.info("This feature is under development.");
-            console.log(`User '${user.user.username}' is attempting to reserve station ID: ${station.id}`);
+            return;
         }
+
+        const vehicleDetails = prompt("Please enter your vehicle details (e.g., 'Blue Tesla Model Y'):");
+
+        if (!vehicleDetails) {
+            toast.warn("Reservation cancelled. Vehicle details are required.");
+            return;
+        }
+
+        const reservationData = {
+            station_id: station.id,
+            vehicle_details: vehicleDetails,
+            start_time: new Date().toISOString()
+        };
+
+        fetch('/api/reservations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(reservationData)
+        })
+        .then(response => {
+            if (response.status === 201) {
+                return response.json();
+            }
+            throw new Error('Failed to make reservation. Please try again.');
+        })
+        .then(() => {
+            toast.success('Reservation successful! Redirecting to your dashboard.');
+            navigate('/dashboard');
+        })
+        .catch(error => {
+            toast.error(error.message);
+        });
     };
 
     return (
