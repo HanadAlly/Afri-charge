@@ -13,7 +13,7 @@ function About() {
       </p>
       <p className="text-africharge-gray">
         Our mission is to support the growth of EV infrastructure with a
-        user-friendly interface and reliable data. Meet our team: Ali, Ruth, and
+        user-friendly interface and reliable data. Meet our team: Ali, Ruth, Dan and
         Brian.
       </p>
     </div>

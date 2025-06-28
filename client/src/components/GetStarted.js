@@ -1,21 +1,29 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 function GetStarted() {
   return (
-    <div className="p-6 text-center max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold text-africharge-blue mb-6">
-        Get Started with AfriCharge
-      </h2>
-      <p className="text-africharge-gray mb-4">
-        Discover charging stations near you or add your own to the network. Join
-        the future of sustainable travel today!
-      </p>
-      <button className="bg-africharge-blue text-white p-3 rounded-lg hover:bg-blue-700">
-        <Link to="/login" className="text-white">
-          Get Started
-        </Link>
-      </button>
+    <div className="text-center py-24 md:py-32">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="container mx-auto px-4"
+        >
+            <h1 className="text-4xl md:text-6xl font-bold text-slate-800 mb-4">
+                Powering Africa's EV Revolution
+            </h1>
+            <p className="text-lg md:text-xl text-slate-text max-w-3xl mx-auto mb-8">
+                Seamlessly find, reserve, and manage electric vehicle charging across the continent. Your journey to sustainable travel starts here.
+            </p>
+            <Link
+                to="/find-stations"
+                className="inline-block bg-brand-blue text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-brand-blue-dark transition-transform transform hover:scale-105"
+            >
+                Find a Station Near You
+            </Link>
+        </motion.div>
     </div>
   );
 }
